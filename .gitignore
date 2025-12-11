@@ -1,0 +1,71 @@
+﻿# Dependencies
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+node_modules
+frontend/node_modules
+
+# Build outputs
+out/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+*.app/
+
+# Development
+.env
+.env.local
+.env.*.local
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# IDE specific
+*.sublime-workspace
+*.sublime-project
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# OS specific
+Desktop.ini
+
+# Python
+*.pyc
+*.pyo
+
+repomix-output.xml
+.serena/cache
+plans/**/*
+!plans/templates/*
+screenshots/*
+docs/screenshots/*
+docs/journals/*
+docs/research/*
+logs.txt
+test-ck
+__pycache__
+prompt.md
+
+# Gemini CLI settings (symlink to .claude/.mcp.json)
+.gemini/settings.json
+.claude/settings.bak.json
+.claude/active-plan

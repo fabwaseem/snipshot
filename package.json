@@ -1,0 +1,23 @@
+{
+  "name": "snipshot",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Modern Screenshot Tool for Windows",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabwaseem/snipshot.git"
+  },
+  "scripts": {
+    "version:bump": "node scripts/bump-version.js",
+    "build:release": "wails build -clean -platform windows/amd64 && wails build -platform windows/amd64 -nsis",
+    "release": "npm run version:bump && npm run build:release"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@types/html2canvas": "^0.5.35"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1"
+  }
+}

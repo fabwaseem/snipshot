@@ -1,0 +1,306 @@
+export namespace config {
+	
+	export class WindowConfig {
+	    width: number;
+	    height: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new WindowConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.width = source["width"];
+	        this.height = source["height"];
+	    }
+	}
+	export class ExportConfig {
+	    defaultFormat: string;
+	    jpegQuality: number;
+	    includeBackground: boolean;
+	    autoCopyToClipboard: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new ExportConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.defaultFormat = source["defaultFormat"];
+	        this.jpegQuality = source["jpegQuality"];
+	        this.includeBackground = source["includeBackground"];
+	        this.autoCopyToClipboard = source["autoCopyToClipboard"];
+	    }
+	}
+	export class QuickSaveConfig {
+	    folder: string;
+	    pattern: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new QuickSaveConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.folder = source["folder"];
+	        this.pattern = source["pattern"];
+	    }
+	}
+	export class StartupConfig {
+	    launchOnStartup: boolean;
+	    minimizeToTray: boolean;
+	    showNotification: boolean;
+	    closeToTray: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new StartupConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.launchOnStartup = source["launchOnStartup"];
+	        this.minimizeToTray = source["minimizeToTray"];
+	        this.showNotification = source["showNotification"];
+	        this.closeToTray = source["closeToTray"];
+	    }
+	}
+	export class HotkeyConfig {
+	    fullscreen: string;
+	    region: string;
+	    window: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new HotkeyConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.fullscreen = source["fullscreen"];
+	        this.region = source["region"];
+	        this.window = source["window"];
+	    }
+	}
+	export class Config {
+	    hotkeys: HotkeyConfig;
+	    startup: StartupConfig;
+	    quickSave: QuickSaveConfig;
+	    export: ExportConfig;
+	    window: WindowConfig;
+	    backgroundImages?: string[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Config(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.hotkeys = this.convertValues(source["hotkeys"], HotkeyConfig);
+	        this.startup = this.convertValues(source["startup"], StartupConfig);
+	        this.quickSave = this.convertValues(source["quickSave"], QuickSaveConfig);
+	        this.export = this.convertValues(source["export"], ExportConfig);
+	        this.window = this.convertValues(source["window"], WindowConfig);
+	        this.backgroundImages = source["backgroundImages"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	
+	
+	
+	
+
+}
+
+export namespace main {
+	
+	export class DisplayBounds {
+	    x: number;
+	    y: number;
+	    width: number;
+	    height: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new DisplayBounds(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.x = source["x"];
+	        this.y = source["y"];
+	        this.width = source["width"];
+	        this.height = source["height"];
+	    }
+	}
+	export class HotkeyConfig {
+	    fullscreen: string;
+	    region: string;
+	    window: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new HotkeyConfig(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.fullscreen = source["fullscreen"];
+	        this.region = source["region"];
+	        this.window = source["window"];
+	    }
+	}
+	export class RegionCaptureData {
+	    screenshot?: screenshot.CaptureResult;
+	    screenX: number;
+	    screenY: number;
+	    width: number;
+	    height: number;
+	    scaleRatio: number;
+	    physicalW: number;
+	    physicalH: number;
+	    displayIndex: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new RegionCaptureData(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.screenshot = this.convertValues(source["screenshot"], screenshot.CaptureResult);
+	        this.screenX = source["screenX"];
+	        this.screenY = source["screenY"];
+	        this.width = source["width"];
+	        this.height = source["height"];
+	        this.scaleRatio = source["scaleRatio"];
+	        this.physicalW = source["physicalW"];
+	        this.physicalH = source["physicalH"];
+	        this.displayIndex = source["displayIndex"];
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class SaveImageResult {
+	    success: boolean;
+	    filePath: string;
+	    error?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new SaveImageResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.success = source["success"];
+	        this.filePath = source["filePath"];
+	        this.error = source["error"];
+	    }
+	}
+
+}
+
+export namespace screenshot {
+	
+	export class CaptureResult {
+	    width: number;
+	    height: number;
+	    data: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CaptureResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.width = source["width"];
+	        this.height = source["height"];
+	        this.data = source["data"];
+	    }
+	}
+
+}
+
+export namespace windows {
+	
+	export class WindowInfo {
+	    handle: any;
+	    title: string;
+	    className: string;
+	    x: number;
+	    y: number;
+	    width: number;
+	    height: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new WindowInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.handle = source["handle"];
+	        this.title = source["title"];
+	        this.className = source["className"];
+	        this.x = source["x"];
+	        this.y = source["y"];
+	        this.width = source["width"];
+	        this.height = source["height"];
+	    }
+	}
+	export class WindowInfoWithThumbnail {
+	    handle: any;
+	    title: string;
+	    className: string;
+	    x: number;
+	    y: number;
+	    width: number;
+	    height: number;
+	    thumbnail: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new WindowInfoWithThumbnail(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.handle = source["handle"];
+	        this.title = source["title"];
+	        this.className = source["className"];
+	        this.x = source["x"];
+	        this.y = source["y"];
+	        this.width = source["width"];
+	        this.height = source["height"];
+	        this.thumbnail = source["thumbnail"];
+	    }
+	}
+
+}
+
