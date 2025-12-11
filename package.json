@@ -1,6 +1,6 @@
 {
   "name": "snipshot",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Modern Screenshot Tool for Windows",
   "repository": {
@@ -10,7 +10,10 @@
   "scripts": {
     "version:bump": "node scripts/bump-version.js",
     "build:release": "wails build -clean -platform windows/amd64 && wails build -platform windows/amd64 -nsis",
-    "release": "npm run version:bump && npm run build:release"
+    "release": "powershell -ExecutionPolicy Bypass -File scripts/release.ps1 patch",
+    "release:patch": "powershell -ExecutionPolicy Bypass -File scripts/release.ps1 patch",
+    "release:minor": "powershell -ExecutionPolicy Bypass -File scripts/release.ps1 minor",
+    "release:major": "powershell -ExecutionPolicy Bypass -File scripts/release.ps1 major"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.1",
