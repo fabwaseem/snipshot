@@ -4,6 +4,8 @@ A lightweight, feature-rich screenshot application built with Wails (Go + React)
 
 **90% smaller than Electron** (~10MB) | **Native performance** | **Rich annotation tools**
 
+🌐 **Landing Page**: [https://snipshot-alpha.vercel.app](https://snipshot-alpha.vercel.app)
+
 ![Snipshot Screenshot](demo.png)
 
 ---
@@ -291,6 +293,7 @@ wails build -upx
 ```
 
 This script will:
+
 1. Bump version in `package.json` (patch/minor/major)
 2. Create a git tag
 3. Build both portable executable and installer
@@ -570,6 +573,7 @@ See [LICENSE](./LICENSE) file for details.
 
 ## 💬 Support & Feedback
 
+- **Website**: [https://snipshot-alpha.vercel.app](https://snipshot-alpha.vercel.app)
 - **Issues**: [GitHub Issues](https://github.com/fabwaseem/snipshot/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/fabwaseem/snipshot/discussions)
 - **Feature Requests**: Open an issue with the `enhancement` label
