@@ -91,7 +91,7 @@ function calculateOutputDimensions(
   screenshotHeight: number,
   padding: number,
   outputRatio: OutputRatio,
-  customDimensions: CustomDimensions | null = null
+  customDimensions: CustomDimensions | null = null,
 ): { totalWidth: number; totalHeight: number } {
   // If custom dimensions are set, use them directly
   if (customDimensions) {
@@ -132,7 +132,7 @@ function calculateOutputDimensions(
 async function copyScreenshotToClipboard(
   screenshotData: string,
   format: "png" | "jpeg",
-  jpegQuality: number
+  jpegQuality: number,
 ): Promise<boolean> {
   try {
     // Create an image from the base64 data
@@ -200,16 +200,16 @@ function App() {
   // Editor settings (loaded from localStorage with lazy initialization)
   const [padding, setPadding] = useState(() => loadEditorSettings().padding);
   const [cornerRadius, setCornerRadius] = useState(
-    () => loadEditorSettings().cornerRadius
+    () => loadEditorSettings().cornerRadius,
   );
   const [shadowSize, setShadowSize] = useState(
-    () => loadEditorSettings().shadowSize
+    () => loadEditorSettings().shadowSize,
   );
   const [backgroundColor, setBackgroundColor] = useState(
-    () => loadEditorSettings().backgroundColor
+    () => loadEditorSettings().backgroundColor,
   );
   const [outputRatio, setOutputRatio] = useState<OutputRatio>(
-    () => loadEditorSettings().outputRatio
+    () => loadEditorSettings().outputRatio,
   );
   const [customDimensions, setCustomDimensions] =
     useState<CustomDimensions | null>(null);
@@ -229,6 +229,7 @@ function App() {
 
   // Export state
   const [isExporting, setIsExporting] = useState(false);
+  const [quickSaveSuccess, setQuickSaveSuccess] = useState(false);
 
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false);
@@ -367,7 +368,7 @@ function App() {
             const success = await copyScreenshotToClipboard(
               result.data,
               format,
-              quality
+              quality,
             );
             if (success) {
               setStatusMessage("Copied to clipboard!");
@@ -389,7 +390,7 @@ function App() {
 
   const handleWindowSelect = async (
     window: WindowInfo,
-    excludeTitleBar: boolean
+    excludeTitleBar: boolean,
   ) => {
     setShowWindowPicker(false);
     setIsCapturing(true);
@@ -398,7 +399,7 @@ function App() {
     try {
       const result = (await CaptureWindow(
         window.handle,
-        excludeTitleBar
+        excludeTitleBar,
       )) as CaptureResult;
       setScreenshot(result);
       // Reset annotations for new capture
@@ -419,7 +420,7 @@ function App() {
             const success = await copyScreenshotToClipboard(
               result.data,
               format,
-              quality
+              quality,
             );
             if (success) {
               setStatusMessage("Copied to clipboard!");
@@ -443,7 +444,7 @@ function App() {
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
   ) => {
     setShowRegionSelector(false);
     setIsCapturing(true);
@@ -485,7 +486,7 @@ function App() {
           0,
           0,
           scaledWidth,
-          scaledHeight
+          scaledHeight,
         );
 
         // Get the cropped image as base64
@@ -519,7 +520,7 @@ function App() {
               const success = await copyScreenshotToClipboard(
                 croppedData,
                 format,
-                quality
+                quality,
               );
               if (success) {
                 setStatusMessage("Copied to clipboard!");
@@ -589,6 +590,10 @@ function App() {
         setStatusMessage("Capturing screen...");
 
         try {
+          // Proactively hide the app window before capture to avoid overlay in screenshot
+          await MinimizeToTray();
+          await new Promise((resolve) => setTimeout(resolve, 400));
+
           // Capture the selected display
           const result = (await CaptureDisplay(screenIndex)) as CaptureResult;
 
@@ -614,7 +619,7 @@ function App() {
                 const success = await copyScreenshotToClipboard(
                   result.data,
                   format,
-                  quality
+                  quality,
                 );
                 if (success) {
                   setStatusMessage("Copied to clipboard!");
@@ -634,7 +639,7 @@ function App() {
         setIsCapturing(false);
       }
     },
-    [pendingRegionCapture]
+    [pendingRegionCapture],
   );
 
   const handleImportImage = useCallback((screenshot: CaptureResult) => {
@@ -709,10 +714,10 @@ function App() {
   const handleAnnotationUpdate = useCallback(
     (id: string, updates: Partial<Annotation>) => {
       setAnnotations((prev) =>
-        prev.map((ann) => (ann.id === id ? { ...ann, ...updates } : ann))
+        prev.map((ann) => (ann.id === id ? { ...ann, ...updates } : ann)),
       );
     },
-    []
+    [],
   );
 
   // Update selected annotation color when stroke color changes
@@ -723,7 +728,7 @@ function App() {
         handleAnnotationUpdate(selectedAnnotationId, { stroke: color });
       }
     },
-    [selectedAnnotationId, handleAnnotationUpdate]
+    [selectedAnnotationId, handleAnnotationUpdate],
   );
 
   // Update selected annotation stroke width when it changes
@@ -734,7 +739,7 @@ function App() {
         handleAnnotationUpdate(selectedAnnotationId, { strokeWidth: width });
       }
     },
-    [selectedAnnotationId, handleAnnotationUpdate]
+    [selectedAnnotationId, handleAnnotationUpdate],
   );
 
   // Update selected text annotation font size when it changes
@@ -743,14 +748,14 @@ function App() {
       setFontSize(size);
       if (selectedAnnotationId) {
         const selectedAnnotation = annotations.find(
-          (a) => a.id === selectedAnnotationId
+          (a) => a.id === selectedAnnotationId,
         );
         if (selectedAnnotation?.type === "text") {
           handleAnnotationUpdate(selectedAnnotationId, { fontSize: size });
         }
       }
     },
-    [selectedAnnotationId, annotations, handleAnnotationUpdate]
+    [selectedAnnotationId, annotations, handleAnnotationUpdate],
   );
 
   // Update selected text annotation font style when it changes
@@ -759,14 +764,14 @@ function App() {
       setFontStyle(style);
       if (selectedAnnotationId) {
         const selectedAnnotation = annotations.find(
-          (a) => a.id === selectedAnnotationId
+          (a) => a.id === selectedAnnotationId,
         );
         if (selectedAnnotation?.type === "text") {
           handleAnnotationUpdate(selectedAnnotationId, { fontStyle: style });
         }
       }
     },
-    [selectedAnnotationId, annotations, handleAnnotationUpdate]
+    [selectedAnnotationId, annotations, handleAnnotationUpdate],
   );
 
   // Update selected arrow annotation curved property
@@ -774,14 +779,14 @@ function App() {
     (curved: boolean) => {
       if (selectedAnnotationId) {
         const selectedAnnotation = annotations.find(
-          (a) => a.id === selectedAnnotationId
+          (a) => a.id === selectedAnnotationId,
         );
         if (selectedAnnotation?.type === "arrow") {
           handleAnnotationUpdate(selectedAnnotationId, { curved });
         }
       }
     },
-    [selectedAnnotationId, annotations, handleAnnotationUpdate]
+    [selectedAnnotationId, annotations, handleAnnotationUpdate],
   );
 
   // Handle border radius change for rectangles
@@ -789,14 +794,16 @@ function App() {
     (radius: number) => {
       if (selectedAnnotationId) {
         const selectedAnnotation = annotations.find(
-          (a) => a.id === selectedAnnotationId
+          (a) => a.id === selectedAnnotationId,
         );
         if (selectedAnnotation?.type === "rectangle") {
-          handleAnnotationUpdate(selectedAnnotationId, { borderRadius: radius });
+          handleAnnotationUpdate(selectedAnnotationId, {
+            borderRadius: radius,
+          });
         }
       }
     },
-    [selectedAnnotationId, annotations, handleAnnotationUpdate]
+    [selectedAnnotationId, annotations, handleAnnotationUpdate],
   );
 
   // Handle fill color change for shapes
@@ -804,7 +811,7 @@ function App() {
     (color: string) => {
       if (selectedAnnotationId) {
         const selectedAnnotation = annotations.find(
-          (a) => a.id === selectedAnnotationId
+          (a) => a.id === selectedAnnotationId,
         );
         if (
           selectedAnnotation?.type === "rectangle" ||
@@ -814,7 +821,7 @@ function App() {
         }
       }
     },
-    [selectedAnnotationId, annotations, handleAnnotationUpdate]
+    [selectedAnnotationId, annotations, handleAnnotationUpdate],
   );
 
   // Handle opacity change for annotations
@@ -824,13 +831,13 @@ function App() {
         handleAnnotationUpdate(selectedAnnotationId, { opacity });
       }
     },
-    [selectedAnnotationId, handleAnnotationUpdate]
+    [selectedAnnotationId, handleAnnotationUpdate],
   );
 
   const handleDeleteSelected = useCallback(() => {
     if (selectedAnnotationId) {
       setAnnotations((prev) =>
-        prev.filter((ann) => ann.id !== selectedAnnotationId)
+        prev.filter((ann) => ann.id !== selectedAnnotationId),
       );
       setSelectedAnnotationId(null);
     }
@@ -895,7 +902,7 @@ function App() {
   const getCanvasDataUrl = useCallback(
     async (
       format: "png" | "jpeg",
-      scale: number = 1
+      scale: number = 1,
     ): Promise<string | null> => {
       const canvasElement = stageRef.current as HTMLDivElement | null;
       if (!canvasElement || !screenshot) return null;
@@ -910,7 +917,7 @@ function App() {
           screenshot.height,
           padding,
           outputRatio,
-          customDimensions
+          customDimensions,
         );
 
         // The canvasElement is the export canvas which is already at full size
@@ -942,7 +949,7 @@ function App() {
 
         // Wait for visibility changes to take effect
         await new Promise((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(resolve))
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
         );
 
         try {
@@ -952,8 +959,10 @@ function App() {
             backgroundColor === "transparent"
               ? null
               : backgroundColor.startsWith("url(")
-              ? null // Let html2canvas handle image backgrounds
-              : backgroundColor;
+                ? null // Let html2canvas handle image backgrounds
+                : backgroundColor.startsWith("linear-gradient")
+                  ? null
+                  : backgroundColor;
 
           // Capture the export canvas with proper options
           const canvas = await html2canvas(canvasElement, {
@@ -987,7 +996,7 @@ function App() {
             console.warn(
               `Dimension mismatch: expected ${totalWidth * scale}x${
                 totalHeight * scale
-              }, got ${canvas.width}x${canvas.height}`
+              }, got ${canvas.width}x${canvas.height}`,
             );
           }
 
@@ -1012,7 +1021,7 @@ function App() {
         return null;
       }
     },
-    [screenshot, padding, outputRatio, customDimensions]
+    [screenshot, padding, outputRatio, customDimensions],
   );
   const getBase64FromDataUrl = (dataUrl: string): string => {
     return dataUrl.split(",")[1];
@@ -1029,7 +1038,7 @@ function App() {
 
       setIsExporting(true);
       setStatusMessage(
-        `Saving${scale > 1 ? ` at ${scale}x resolution` : ""}...`
+        `Saving${scale > 1 ? ` at ${scale}x resolution` : ""}...`,
       );
 
       try {
@@ -1038,7 +1047,7 @@ function App() {
 
         if (result.success) {
           setStatusMessage(
-            `Saved to ${result.filePath}${scale > 1 ? ` (${scale}x)` : ""}`
+            `Saved to ${result.filePath}${scale > 1 ? ` (${scale}x)` : ""}`,
           );
         } else {
           setStatusMessage(result.error || "Save failed");
@@ -1051,7 +1060,7 @@ function App() {
       setIsExporting(false);
       setTimeout(() => setStatusMessage(undefined), 3000);
     },
-    [getCanvasDataUrl]
+    [getCanvasDataUrl],
   );
 
   const handleQuickSave = useCallback(
@@ -1064,7 +1073,7 @@ function App() {
 
       setIsExporting(true);
       setStatusMessage(
-        `Saving${scale > 1 ? ` at ${scale}x resolution` : ""}...`
+        `Saving${scale > 1 ? ` at ${scale}x resolution` : ""}...`,
       );
 
       try {
@@ -1073,6 +1082,8 @@ function App() {
 
         if (result.success) {
           setStatusMessage(`Saved to ${result.filePath}`);
+          setQuickSaveSuccess(true);
+          setTimeout(() => setQuickSaveSuccess(false), 1500);
         } else {
           setStatusMessage(result.error || "Quick save failed");
         }
@@ -1084,7 +1095,7 @@ function App() {
       setIsExporting(false);
       setTimeout(() => setStatusMessage(undefined), 3000);
     },
-    [getCanvasDataUrl]
+    [getCanvasDataUrl],
   );
 
   const handleCopyToClipboard = useCallback(async () => {
@@ -1307,6 +1318,7 @@ function App() {
         onQuickSave={handleQuickSave}
         onCopyToClipboard={handleCopyToClipboard}
         isExporting={isExporting}
+        quickSaveSuccess={quickSaveSuccess}
       />
 
       <WindowPicker

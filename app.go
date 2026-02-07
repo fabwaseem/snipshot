@@ -182,11 +182,12 @@ func (a *App) PrepareRegionCapture(displayIndex int) (*RegionCaptureData, error)
 		a.preCaptureHeight = 800
 	}
 
-	// Hide the window first so it's not in the screenshot
+	// Ensure window is not forced on top and hide it before capture
+	runtime.WindowSetAlwaysOnTop(a.ctx, false)
 	runtime.WindowHide(a.ctx)
 
-	// Wait for window to fully hide (350ms needed for Windows DWM compositor)
-	time.Sleep(350 * time.Millisecond)
+	// Wait for window to fully hide (longer delay improves reliability with DWM compositor)
+	time.Sleep(600 * time.Millisecond)
 
 	// Determine which display to capture
 	var result *screenshot.CaptureResult
@@ -396,11 +397,12 @@ func (a *App) CaptureRegion(x, y, width, height int) (*screenshot.CaptureResult,
 // CaptureDisplay captures a specific display by index
 // Hides the window before capture to avoid capturing the overlay
 func (a *App) CaptureDisplay(displayIndex int) (*screenshot.CaptureResult, error) {
-	// Hide the window first so the overlay is not in the screenshot
+	// Ensure window is not on top and hide before capture to avoid overlay
+	runtime.WindowSetAlwaysOnTop(a.ctx, false)
 	runtime.WindowHide(a.ctx)
 
-	// Wait for window to fully hide (350ms needed for Windows DWM compositor)
-	time.Sleep(350 * time.Millisecond)
+	// Wait for window to fully hide (longer delay improves reliability)
+	time.Sleep(600 * time.Millisecond)
 
 	// Capture the display
 	result, err := screenshot.CaptureDisplay(displayIndex)
@@ -420,6 +422,12 @@ func (a *App) CaptureDisplay(displayIndex int) (*screenshot.CaptureResult, error
 // CaptureWindow captures a specific window by handle
 // If excludeTitleBar is true, captures only the client area (excluding title bar and borders)
 func (a *App) CaptureWindow(hwnd int, excludeTitleBar bool) (*screenshot.CaptureResult, error) {
+	// Ensure our window is not overlaying the target: turn off topmost and hide
+	runtime.WindowSetAlwaysOnTop(a.ctx, false)
+	runtime.WindowHide(a.ctx)
+	// Give compositor time to remove our window from the scene
+	time.Sleep(600 * time.Millisecond)
+
 	result, err := screenshot.CaptureWindowByCoords(uintptr(hwnd), excludeTitleBar)
 
 	// Bring Snipshot back to front after capture

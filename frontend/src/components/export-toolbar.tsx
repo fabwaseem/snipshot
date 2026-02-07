@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ClipboardCopy, Download, Save } from "lucide-react";
+import { ClipboardCopy, Download, Save, Check } from "lucide-react";
 import { CaptureResult } from "../types";
 
 interface ExportToolbarProps {
@@ -8,6 +8,7 @@ interface ExportToolbarProps {
   onQuickSave: (format: "png" | "jpeg", scale?: number) => void;
   onCopyToClipboard: () => void;
   isExporting: boolean;
+  quickSaveSuccess?: boolean;
 }
 
 export function ExportToolbar({
@@ -16,6 +17,7 @@ export function ExportToolbar({
   onQuickSave,
   onCopyToClipboard,
   isExporting,
+  quickSaveSuccess = false,
 }: ExportToolbarProps) {
   const [format, setFormat] = useState<"png" | "jpeg">("png");
   const [scale, setScale] = useState<number>(1);
@@ -244,7 +246,11 @@ export function ExportToolbar({
             }}
             title="Quick Save to Pictures/Snipshot (Ctrl+S)"
           >
-            <Download className="w-4 h-4" />
+            {quickSaveSuccess ? (
+              <Check className="w-4 h-4" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
           </button>
 
           {/* Save As */}
