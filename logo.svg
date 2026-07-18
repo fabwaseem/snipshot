@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="Snipshot">
+  <!-- App tile -->
+  <rect width="512" height="512" rx="112" fill="#171512"/>
+  <!-- Soft inner wash -->
+  <rect x="28" y="28" width="456" height="456" rx="92" fill="#1F1C18"/>
+  <!-- Amber selection frame (screenshot crop) -->
+  <path
+    d="M148 128h-28a20 20 0 0 0-20 20v28M364 128h28a20 20 0 0 1 20 20v28M148 384h-28a20 20 0 0 1-20-20v-28M364 384h28a20 20 0 0 0 20-20v-28"
+    stroke="#E8A04A"
+    stroke-width="28"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Inner snip plate -->
+  <rect x="168" y="168" width="176" height="176" rx="28" fill="#E8A04A"/>
+  <!-- Cut / shutter notch -->
+  <path
+    d="M232 256h48M256 232v48"
+    stroke="#171512"
+    stroke-width="22"
+    stroke-linecap="round"
+  />
+</svg>

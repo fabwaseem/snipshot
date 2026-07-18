@@ -1,5 +1,9 @@
-# Snipshot Release Script
+# Snipshot Release Script (LEGACY v1 — Wails)
 # Usage: .\scripts\release.ps1 [patch|minor|major]
+#
+# WARNING: This repo is legacy. Ship new builds from snipshot-v2 via:
+#   https://github.com/fabwaseem/snipshot-releases
+# Do not publish new v1 releases unless you intentionally need a hotfix.
 
 param(
     [Parameter(Position=0)]
@@ -9,7 +13,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-Write-Host "Starting release process..." -ForegroundColor Cyan
+Write-Host "WARNING: snipshot (Wails) is legacy. Prefer snipshot-releases for the new Tauri app." -ForegroundColor Magenta
+Write-Host "Starting legacy v1 release process..." -ForegroundColor Cyan
 
 # Step 0: Update appicon from logo (if logo exists)
 Write-Host "`nUpdating appicon from logo..." -ForegroundColor Yellow
